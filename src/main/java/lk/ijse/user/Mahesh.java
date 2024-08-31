@@ -1,18 +1,31 @@
 package lk.ijse.user;
 
-import lk.ijse.aop.Transaction;
-import lk.ijse.config.Config;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import jakarta.annotation.PostConstruct;
+import lk.ijse.contract.Eat;
+import lk.ijse.customannotation.CrispyChicken;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
+@Component
 public class Mahesh {
-    public static void main(String[] args) {
-        var ctx = new AnnotationConfigApplicationContext();
-        ctx.register(Config.class);
-        ctx.refresh();
-        Transaction transaction = (Transaction) ctx.getBean("transaction");
-        transaction.startTransaction();
-        transaction.endTransaction();
-        ctx.registerShutdownHook();
+    private Eat eat;
+
+    public Mahesh(){
+        System.out.println(eat);
     }
+
+    @Autowired
+    @Qualifier("Eat")
+    @CrispyChicken
+    public void setBakeryItems(Eat bakeryItems){
+        this.eat = bakeryItems;
+    }
+
+    @PostConstruct
+    public void init() {
+        eat.eat();
+    }
+
 }
